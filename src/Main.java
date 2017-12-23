@@ -2,12 +2,25 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Main {
-    void init(){
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Enter your word: ");
-        String input = scan.next();
+    Network network;
+    String input;
+    Layer lastLayer;
 
-        Network network = new Network();
+    void init(){
+        getWord();
+        createFirstLayer();
+        createLastLayer();
+    }
+
+    private void createLastLayer(){
+        lastLayer = new Layer();
+        Node n0 = new Node();
+        lastLayer.appendNode(n0);
+        Node n1 = new Node();
+        lastLayer.appendNode(n1);
+    }
+    private void createFirstLayer() {
+        network = new Network();
         ArrayList<Layer> layers = new ArrayList<>();
         Layer firstLayer = new Layer();
 
@@ -16,5 +29,11 @@ class Main {
             firstLayer.appendNode(n);
         }
 
+        network.appendLayer(firstLayer);
+    }
+    private void getWord(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter your word: ");
+        input = scan.next();
     }
 }
