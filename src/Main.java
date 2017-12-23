@@ -26,6 +26,7 @@ class Main {
 
         for(int i = 0; i < input.length(); ++i){
             Node n = new Node();
+            n.setValue(input.charAt(i));
             firstLayer.appendNode(n);
         }
 
