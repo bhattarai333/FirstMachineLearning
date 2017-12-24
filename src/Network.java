@@ -1,6 +1,4 @@
-import java.io.*;
 import java.util.ArrayList;
-import org.json.*;
 
 class Network {
     private ArrayList<Layer> layers;
