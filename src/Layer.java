@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 
 class Layer {
-    private ArrayList<Node> nodes;
+    ArrayList<Node> nodes;
+    private int numberOfNodes;
 
     Layer() {
         nodes = new ArrayList<>();
@@ -9,5 +10,10 @@ class Layer {
 
     void appendNode(Node n){
         nodes.add(n);
+        numberOfNodes++;
+    }
+
+    int getNumberOfNodes(){
+        return numberOfNodes;
     }
 }
