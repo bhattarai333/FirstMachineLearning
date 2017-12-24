@@ -18,7 +18,14 @@ class Main {
     private void linkNodes(){
         //create edges between nodes throughout the network
 
-        //implement this soon
+        for(int i = 0; i <= network.layers.size(); ++i){
+            Layer l = network.layers.get(i);
+            for(int j = 0; j < l.nodes.size(); ++j){
+                Node n = l.nodes.get(j);
+
+
+            }
+        }
 
     }
     private void createLastLayer(){

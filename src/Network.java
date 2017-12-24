@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 class Network {
-    private ArrayList<Layer> layers;
+    ArrayList<Layer> layers;
     private String path = "./Network/network.json";
     private int numberOfLayers;
 
