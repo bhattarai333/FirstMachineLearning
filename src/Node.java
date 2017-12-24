@@ -17,6 +17,10 @@ public class Node {
         this.value = value;
     }
 
+    void addValue(int val){
+        value = value + val;
+    }
+
     void appendEdge(Edge e){
         edges.add(e);
         numberOfEdges++;

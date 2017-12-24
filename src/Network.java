@@ -15,24 +15,38 @@ class Network {
         numberOfLayers++;
     }
 
+    void proliferate(){
+        for(int i = 0; i < layers.size() - 1; ++i){
+            Layer l = layers.get(i);
+            for(int j = 0; j < l.nodes.size(); ++j){
+                Node n = l.nodes.get(j);
+                for(int k = 0; k < n.edges.size(); ++k){
+                    Edge e = n.edges.get(k);
+                    Node endNode = e.getEndNode();
+                    endNode.addValue(n.getValue()*e.getWeight());
+                }
+            }
+        }
+    }
+
     @Override
     public String toString(){
         String output = "";
         output = output + "Number of Layers: " + numberOfLayers + "\n";
         output = output + "Path: " + path + "\n";
-        int i = 0;
-        for (int ii = 0; ii < layers.size(); ++ii) {
-            ++i;
-            Layer l = layers.get(ii);
-            output = output + "\nLayer " + i + ", " + l.getNumberOfNodes() + " node(s): " + "\n";
-            int j = 0;
+        int layerCounter = 0;
+        for (int i = 0; i < layers.size(); ++i) {
+            ++layerCounter;
+            Layer l = layers.get(i);
+            output = output + "\nLayer " + layerCounter + ", " + l.getNumberOfNodes() + " node(s): " + "\n";
+            int nodeCounter = 0;
             for (Node n : l.nodes) {
-                ++j;
-                output = output + "Node " + j + ": " + n.getValue() + "  |  Connections: ";
+                ++nodeCounter;
+                output = output + "Node " + nodeCounter + ": " + n.getValue() + "  |  Connections: ";
                 for(Edge e : n.edges){
                     int nodeNum;
                     Node endNode = e.getEndNode();
-                    nodeNum = layers.get(ii+1).nodes.indexOf(endNode);
+                    nodeNum = layers.get(i+1).nodes.indexOf(endNode);
                     nodeNum = nodeNum + 1;
                     output = output + nodeNum + "(W:" + e.getWeight() + "), ";
                 }

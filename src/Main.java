@@ -2,11 +2,17 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Main {
+    private void result(){
+        if(network.layers.get(network.layers.size()-1).nodes.get(0).getValue()>network.layers.get(network.layers.size()-1).nodes.get(1).getValue()){
+            System.out.println("Is word");
+        }else{
+            System.out.println("Is not word");
+        }
+    }
     private GetResources get = new GetResources();
     private Network network;
     private String input;
     private int alphaVal = 2;
-
     void init(){
         getWord();
         createFirstLayer();
@@ -14,12 +20,14 @@ class Main {
         createLastLayer();
         linkNodes();
         System.out.println(network.toString());
-        if(network.layers.get(network.layers.size()-1).nodes.get(0).getValue()>network.layers.get(network.layers.size()-1).nodes.get(1).getValue()){
-            System.out.println("Is word");
-        }else{
-            System.out.println("Is not word");
-        }
+        network.proliferate();
+        System.out.println(network.toString());
+
+
+
+        result();
     }
+
 
     private void linkNodes(){
         //create edges between nodes throughout the network
