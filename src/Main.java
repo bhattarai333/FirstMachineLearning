@@ -5,6 +5,7 @@ class Main {
     private GetResources get = new GetResources();
     private Network network;
     private String input;
+    private int alphaVal = 2;
 
     void init(){
         getWord();
@@ -13,16 +14,28 @@ class Main {
         createLastLayer();
         linkNodes();
         System.out.println(network.toString());
+        if(network.layers.get(network.layers.size()-1).nodes.get(0).getValue()>network.layers.get(network.layers.size()-1).nodes.get(1).getValue()){
+            System.out.println("Is word");
+        }else{
+            System.out.println("Is not word");
+        }
     }
 
     private void linkNodes(){
         //create edges between nodes throughout the network
 
-        for(int i = 0; i <= network.layers.size(); ++i){
+        for(int i = 0; i < network.layers.size()-1; ++i){
             Layer l = network.layers.get(i);
+            Layer nextLayer = network.layers.get(i+1);
             for(int j = 0; j < l.nodes.size(); ++j){
                 Node n = l.nodes.get(j);
-
+                for(int k = 0; k < nextLayer.nodes.size(); ++k){
+                    int rand = get.randomWithRange(0,5);
+                    if(rand > alphaVal){
+                        Edge e = new Edge(n,nextLayer.nodes.get(k),get.randomWithRange(0,alphaVal));
+                        n.appendEdge(e);
+                    }
+                }
 
             }
         }
@@ -44,15 +57,15 @@ class Main {
 
     }
     private void createHiddenLayers() {
-        int hiddenLayersNumber = get.randomWithRange(1, input.length()*2);                  // decide how many hidden layers there will be
+        int hiddenLayersNumber = get.randomWithRange(1, input.length()*alphaVal);                           // decide how many hidden layers there will be
         for(int i = 0; i < hiddenLayersNumber; ++i){
-            int numberOfNodes = get.randomWithRange(input.length()/2,input.length()*2);     // determine how many nodes will be within each layer
+            int numberOfNodes = get.randomWithRange(input.length()/alphaVal,input.length()*alphaVal);       // determine how many nodes will be within each layer
             Layer l = new Layer();
             for(int j = 0; j < numberOfNodes; ++j){
                 Node n = new Node();
-                l.appendNode(n);                                                            // add node to layer
+                l.appendNode(n);                                                                            // add node to layer
             }
-            network.appendLayer(l);                                                         // add layer to network
+            network.appendLayer(l);                                                                         // add layer to network
         }
 
     }

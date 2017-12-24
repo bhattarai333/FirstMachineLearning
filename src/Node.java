@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Node {
-    private ArrayList<Edge> edges;
+    ArrayList<Edge> edges;
     private int numberOfEdges;
     private int value;
 
