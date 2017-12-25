@@ -14,11 +14,6 @@ class Network {
         layers = new ArrayList<>();
     }
 
-    void wipeNetwork(){
-        layers = new ArrayList<>();
-        numberOfLayers = 0;
-    }
-
     void appendLayer(Layer l){
         layers.add(l);
         numberOfLayers++;
@@ -75,7 +70,6 @@ class Network {
         JSONObject networkObject = new JSONObject(get.getTextFromFile(path));
         decodeJSON(networkObject);
     }
-
     private void decodeJSON(JSONObject networkObject){
         JSONArray layersArray = networkObject.getJSONArray("Layers");
         JSONObject finalLayerObject = layersArray.getJSONObject(layersArray.length()-1);
@@ -118,6 +112,10 @@ class Network {
         }
     }
 
+    void wipeNetwork(){
+        layers = new ArrayList<>();
+        numberOfLayers = 0;
+    }
 
     void saveNetwork(){
         get.makeDirectory("./Network/");
