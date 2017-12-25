@@ -14,6 +14,11 @@ class Network {
         layers = new ArrayList<>();
     }
 
+    void wipeNetwork(){
+        layers = new ArrayList<>();
+        numberOfLayers = 0;
+    }
+
     void appendLayer(Layer l){
         layers.add(l);
         numberOfLayers++;
@@ -67,13 +72,52 @@ class Network {
 
 
     void loadNetwork(){
-        JSONObject networkObject = loadFile();
-        System.out.println(networkObject);
+        JSONObject networkObject = new JSONObject(get.getTextFromFile(path));
+        decodeJSON(networkObject);
     }
-    private JSONObject loadFile(){
-        String s = get.getTextFromFile(path);
-        return new JSONObject(s);
+
+    private void decodeJSON(JSONObject networkObject){
+        JSONArray layersArray = networkObject.getJSONArray("Layers");
+        JSONObject finalLayerObject = layersArray.getJSONObject(layersArray.length()-1);
+        Layer finalLayer = new Layer();
+        JSONArray finalNodes = finalLayerObject.getJSONArray("Nodes");
+        for(int a = 0; a < finalNodes.length(); ++a){
+            Node n = new Node();
+            finalLayer.appendNode(n);
+        }
+
+
+        appendLayer(finalLayer);
+
+        for(int i = layersArray.length() - 2; i >= 0; --i){
+            JSONObject layerObject = layersArray.getJSONObject(i);
+            Layer l = new Layer();
+            JSONArray nodesArray = layerObject.getJSONArray("Nodes");
+            for(int j = 0; j < nodesArray.length(); ++j){
+                JSONObject nodeObject = nodesArray.getJSONObject(j);
+                Node n = new Node();
+                JSONArray edgesArray = nodeObject.getJSONArray("Edges");
+                for(int k = 0; k < nodesArray.length(); ++k){
+                    JSONObject edgeObject;
+                    try {
+                        edgeObject = edgesArray.getJSONObject(k);
+                    }catch (Exception e){
+                        continue;
+                    }
+                    int endNodeIndex = edgeObject.getInt("EndNodeNum");
+                    Layer nextLayer = layers.get(0);
+                    Node endNode = nextLayer.nodes.get(endNodeIndex);
+                    int weight = edgeObject.getInt("Weight");
+                    Edge e = new Edge(n,endNode,weight);
+                    n.appendEdge(e);
+                }
+                l.appendNode(n);
+            }
+            layers.add(0,l);
+            numberOfLayers++;
+        }
     }
+
 
     void saveNetwork(){
         get.makeDirectory("./Network/");
@@ -99,7 +143,7 @@ class Network {
                     edgeObject.accumulate("Weight",e.getWeight());
                     Node endNode = e.getEndNode();
                     int nextLayer = layers.indexOf(l) + 1;
-                    int endNodeNumInLayer = layers.get(nextLayer).nodes.indexOf(endNode) + 1;
+                    int endNodeNumInLayer = layers.get(nextLayer).nodes.indexOf(endNode);
                     edgeObject.accumulate("EndNodeNum", endNodeNumInLayer);
                     edgesArray.put(edgeObject);
                 }

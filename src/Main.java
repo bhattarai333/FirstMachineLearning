@@ -20,8 +20,11 @@ class Main {
         createLastLayer();
         linkNodes();
         network.proliferate();
-        System.out.println(network.toString());
+        System.out.println(network);
+        network.saveNetwork();
+        network.wipeNetwork();
         network.loadNetwork();
+        System.out.println(network);
 
 
 
