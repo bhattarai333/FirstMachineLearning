@@ -19,9 +19,9 @@ class Main {
         createHiddenLayers();
         createLastLayer();
         linkNodes();
-        System.out.println(network.toString());
         network.proliferate();
         System.out.println(network.toString());
+        network.loadNetwork();
 
 
 

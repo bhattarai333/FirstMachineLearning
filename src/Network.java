@@ -1,6 +1,10 @@
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 class Network {
+    GetResources get = new GetResources();
     ArrayList<Layer> layers;
     private String path = "./Network/network.json";
     private int numberOfLayers;
@@ -59,4 +63,54 @@ class Network {
 
         return output;
     }
+
+
+
+    void loadNetwork(){
+        JSONObject networkObject = loadFile();
+        System.out.println(networkObject);
+    }
+    private JSONObject loadFile(){
+        String s = get.getTextFromFile(path);
+        return new JSONObject(s);
+    }
+
+    void saveNetwork(){
+        get.makeDirectory("./Network/");
+        JSONObject networkJSON = createJSON();
+        get.writeFile(networkJSON.toString(),path);
+
+    }
+    private JSONObject createJSON(){
+        JSONObject networkObject = new JSONObject();
+        networkObject.accumulate("NumLayers",numberOfLayers);
+        networkObject.accumulate("Path", path);
+        JSONArray layersArray = new JSONArray();
+        for(Layer l : layers){
+            JSONObject layerObject = new JSONObject();
+            layerObject.accumulate("NumNodes",l.getNumberOfNodes());
+            JSONArray nodesArray = new JSONArray();
+            for(Node n : l.nodes){
+                JSONObject nodeObject =  new JSONObject();
+                nodeObject.accumulate("NumEdges",n.getNumberOfEdges());
+                JSONArray edgesArray = new JSONArray();
+                for(Edge e : n.edges){
+                    JSONObject edgeObject = new JSONObject();
+                    edgeObject.accumulate("Weight",e.getWeight());
+                    Node endNode = e.getEndNode();
+                    int nextLayer = layers.indexOf(l) + 1;
+                    int endNodeNumInLayer = layers.get(nextLayer).nodes.indexOf(endNode) + 1;
+                    edgeObject.accumulate("EndNodeNum", endNodeNumInLayer);
+                    edgesArray.put(edgeObject);
+                }
+                nodeObject.put("Edges",edgesArray);
+                nodesArray.put(nodeObject);
+            }
+            layerObject.put("Nodes",nodesArray);
+            layersArray.put(layerObject);
+        }
+        networkObject.put("Layers",layersArray);
+        return networkObject;
+    }
+
 }
