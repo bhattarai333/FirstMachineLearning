@@ -88,7 +88,8 @@ class Main {
         //create input layer where each node corresponds to a character in the string
         for(int i = 0; i < input.length(); ++i){
             Node n = new Node();
-            n.setValue(input.charAt(i));
+            int nodeVal = input.charAt(i);
+            n.setValueWithoutSigmoid((double) nodeVal);
             firstLayer.appendNode(n);
         }
 

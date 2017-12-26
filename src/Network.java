@@ -45,7 +45,7 @@ class Network {
     int getResult(){
         Layer lastLayer = layers.get(layers.size()-1);
         int indexOfHighestNode = 0;
-        int maxVal = Integer.MIN_VALUE;
+        double maxVal = Integer.MIN_VALUE;
         for(Node n : lastLayer.nodes){
             if(n.getValue() > maxVal){
                 maxVal = n.getValue();
@@ -127,7 +127,7 @@ class Network {
                     int endNodeIndex = edgeObject.getInt("EndNodeNum");
                     Layer nextLayer = layers.get(0);
                     Node endNode = nextLayer.nodes.get(endNodeIndex);
-                    int weight = edgeObject.getInt("Weight");
+                    double weight = edgeObject.getDouble("Weight");
                     Edge e = new Edge(n,endNode,weight);
                     n.appendEdge(e);
                 }

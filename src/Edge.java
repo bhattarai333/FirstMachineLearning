@@ -1,9 +1,9 @@
 class Edge {
     private Node startNode;
     private Node endNode;
-    private int weight;
+    private double weight;
 
-    Edge(Node startNode, Node endNode, int weight){
+    Edge(Node startNode, Node endNode, double weight){
         this.startNode = startNode;
         this.endNode = endNode;
         this.weight = weight;
@@ -15,11 +15,11 @@ class Edge {
         weight = 0;
     }
 
-    void setWeight(int weight){
+    void setWeight(double weight){
         this.weight = weight;
     }
 
-    int getWeight(){
+    double getWeight(){
         return weight;
     }
 

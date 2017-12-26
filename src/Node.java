@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Node {
     ArrayList<Edge> edges;
     private int numberOfEdges;
-    private int value;
+    private double value;
 
     Node(){
         edges = new ArrayList<>();
@@ -14,16 +14,21 @@ public class Node {
         this.value = value;
     }
 
-    int getValue() {
+    double getValue() {
         return value;
     }
 
-    void setValue(int value) {
+    void setValue(double value) {
+        //this.value = 1 / (1 + Math.exp(-value));
+        setValueWithoutSigmoid(value);
+    }
+
+    void setValueWithoutSigmoid(double value){
         this.value = value;
     }
 
-    void addValue(int val){
-        value = value + val;
+    void addValue(double val){
+        setValue(value + val);
     }
 
     void appendEdge(Edge e){
