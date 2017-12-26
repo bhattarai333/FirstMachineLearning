@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Node {
-    ArrayList<Edge> edges;
+    private ArrayList<Edge> edges;
     private int numberOfEdges;
     private int value;
 
@@ -12,6 +12,10 @@ public class Node {
     Node(int value){
         edges = new ArrayList<>();
         this.value = value;
+    }
+
+    ArrayList<Edge> getEdges(){
+        return edges;
     }
 
     int getValue() {
@@ -31,7 +35,12 @@ public class Node {
         numberOfEdges++;
     }
 
-    public int getNumberOfEdges() {
+    void deleteEdge(Edge e){
+        edges.remove(e);
+        numberOfEdges--;
+    }
+
+    int getNumberOfEdges() {
         return numberOfEdges;
     }
 }

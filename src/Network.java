@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 class Network {
     GetResources get = new GetResources();
-    ArrayList<Layer> layers;
+    private ArrayList<Layer> layers;
     private String path = "./Network/network.json";
     private int numberOfLayers;
 
@@ -20,11 +20,11 @@ class Network {
 
     void newInputLayer(Layer l){
         Layer firstLayer = layers.get(0);
-        for(int i = 0; i < firstLayer.nodes.size(); ++i){
+        for(int i = 0; i < firstLayer.getNodes().size(); ++i){
             try {
-                firstLayer.nodes.get(i).setValue(l.nodes.get(i).getValue());
+                firstLayer.getNodes().get(i).setValue(l.getNodes().get(i).getValue());
             }catch (Exception e){
-                firstLayer.nodes.get(i).setValue(0);
+                firstLayer.getNodes().get(i).setValue(0);
             }
         }
         layers.set(0,firstLayer);
@@ -32,10 +32,10 @@ class Network {
     void proliferate(){
         for(int i = 0; i < layers.size() - 1; ++i){
             Layer l = layers.get(i);
-            for(int j = 0; j < l.nodes.size(); ++j){
-                Node n = l.nodes.get(j);
-                for(int k = 0; k < n.edges.size(); ++k){
-                    Edge e = n.edges.get(k);
+            for(int j = 0; j < l.getNodes().size(); ++j){
+                Node n = l.getNodes().get(j);
+                for(int k = 0; k < n.getEdges().size(); ++k){
+                    Edge e = n.getEdges().get(k);
                     Node endNode = e.getEndNode();
                     endNode.addValue(n.getValue()*e.getWeight());
                 }
@@ -46,17 +46,92 @@ class Network {
         Layer lastLayer = layers.get(layers.size()-1);
         int indexOfHighestNode = 0;
         int maxVal = Integer.MIN_VALUE;
-        for(Node n : lastLayer.nodes){
+        for(Node n : lastLayer.getNodes()){
             if(n.getValue() > maxVal){
                 maxVal = n.getValue();
-                indexOfHighestNode = lastLayer.nodes.indexOf(n);
+                indexOfHighestNode = lastLayer.getNodes().indexOf(n);
             }
         }
         return indexOfHighestNode;
     }
+    private Layer getRandomLayer(){
+        int layerNum = get.randomWithRange(0,layers.size()-1);
+        return layers.get(layerNum);
+    }
+    private Layer getRandomHiddenLayer(){
+        int layerNum = get.randomWithRange(1,layers.size()-2);
+        return layers.get(layerNum);
+    }
+    private Node getRandomNode(){
+        Layer l = getRandomLayer();
+        int nodeNum = get.randomWithRange(0, l.getNodes().size()-1);
+        return l.getNodes().get(nodeNum);
+    }
+    private Node getRandomHiddenNode(){
+
+        Layer l = getRandomHiddenLayer();
+        int nodeNum = get.randomWithRange(0, l.getNodes().size()-1);
+        return l.getNodes().get(nodeNum);
+    }
+    private Edge getRandomEdge(){
+        Node n = getRandomNode();
+        int edgeNum = get.randomWithRange(0, n.getEdges().size()-1);
+        try {
+            return n.getEdges().get(edgeNum);
+        }catch (Exception e){
+            return getRandomEdge();
+        }
+    }
+    private Edge getRandomHiddenEdge(){
+
+        Node n = getRandomHiddenNode();
+        int edgeNum = get.randomWithRange(0, n.getEdges().size()-1);
+        return n.getEdges().get(edgeNum);
+    }
+    ArrayList<Layer> getLayers(){
+        return layers;
+    }
 
     void randomChange(){
-        int typeOfChange = get.randomWithRange(0,2);
+        int typeOfChange = get.randomWithRange(0,4);
+        if(typeOfChange == 0){
+            changeEdgeWeight();
+        }else if(typeOfChange == 1){
+            deleteEdge();
+        }else if(typeOfChange == 2){
+            addEdge();
+        }else if(typeOfChange == 3){
+            deleteNode();
+        }else{
+            addNode();
+        }
+    }
+    private void changeEdgeWeight(){
+        Edge e = getRandomEdge();
+        e.setWeight(get.randomWithRange(0,2));
+    }
+    private void deleteEdge(){
+        Node n = getRandomNode();
+        int edgeNum = get.randomWithRange(0,n.getEdges().size()-1);
+        Edge e;
+        try {
+            e = n.getEdges().get(edgeNum);
+        }catch(Exception ex){
+            return;
+        }
+        n.deleteEdge(e);
+    }
+    private void addEdge(){
+        Node n = getRandomHiddenNode();
+        Node n2 = getRandomHiddenNode();
+        Edge e = new Edge(n,n2,get.randomWithRange(0,2));
+        n.appendEdge(e);
+    }
+    private void deleteNode(){
+        //implement later
+    }
+    private void addNode(){
+        //implement later
     }
 
     @Override
@@ -70,13 +145,13 @@ class Network {
             Layer l = layers.get(i);
             output = output + "\nLayer " + layerCounter + ", " + l.getNumberOfNodes() + " node(s): " + "\n";
             int nodeCounter = 0;
-            for (Node n : l.nodes) {
+            for (Node n : l.getNodes()) {
                 ++nodeCounter;
                 output = output + "Node " + nodeCounter + ": " + n.getValue() + "  |  Connections: ";
-                for(Edge e : n.edges){
+                for(Edge e : n.getEdges()){
                     int nodeNum;
                     Node endNode = e.getEndNode();
-                    nodeNum = layers.get(i+1).nodes.indexOf(endNode);
+                    nodeNum = layers.get(i + 1).getNodes().indexOf(endNode);
                     nodeNum = nodeNum + 1;
                     output = output + nodeNum + "(W:" + e.getWeight() + "), ";
                 }
@@ -126,7 +201,7 @@ class Network {
                     }
                     int endNodeIndex = edgeObject.getInt("EndNodeNum");
                     Layer nextLayer = layers.get(0);
-                    Node endNode = nextLayer.nodes.get(endNodeIndex);
+                    Node endNode = nextLayer.getNodes().get(endNodeIndex);
                     int weight = edgeObject.getInt("Weight");
                     Edge e = new Edge(n,endNode,weight);
                     n.appendEdge(e);
@@ -158,16 +233,16 @@ class Network {
             JSONObject layerObject = new JSONObject();
             layerObject.accumulate("NumNodes",l.getNumberOfNodes());
             JSONArray nodesArray = new JSONArray();
-            for(Node n : l.nodes){
+            for(Node n : l.getNodes()){
                 JSONObject nodeObject =  new JSONObject();
                 nodeObject.accumulate("NumEdges",n.getNumberOfEdges());
                 JSONArray edgesArray = new JSONArray();
-                for(Edge e : n.edges){
+                for(Edge e : n.getEdges()){
                     JSONObject edgeObject = new JSONObject();
                     edgeObject.accumulate("Weight",e.getWeight());
                     Node endNode = e.getEndNode();
                     int nextLayer = layers.indexOf(l) + 1;
-                    int endNodeNumInLayer = layers.get(nextLayer).nodes.indexOf(endNode);
+                    int endNodeNumInLayer = layers.get(nextLayer).getNodes().indexOf(endNode);
                     edgeObject.accumulate("EndNodeNum", endNodeNumInLayer);
                     edgesArray.put(edgeObject);
                 }

@@ -3,9 +3,17 @@ import java.util.Scanner;
 
 class Main {
     private void result(){
-        if(network.layers.get(network.layers.size()-1).nodes.get(0).getValue()>network.layers.get(network.layers.size()-1).nodes.get(1).getValue()){
+        if(
+                network.getLayers().get(network.getLayers().size() - 1)
+                .getNodes().get(0).getValue()
+                        >
+                network.getLayers().get(network.getLayers().size() - 1)
+                .getNodes().get(1).getValue())
+        {
             System.out.println("Is word");
-        }else{
+        }
+        else
+        {
             System.out.println("Is not word");
         }
     }
@@ -35,15 +43,15 @@ class Main {
     private void linkNodes(){
         //create edges between nodes throughout the network
 
-        for(int i = 0; i < network.layers.size()-1; ++i){
-            Layer l = network.layers.get(i);
-            Layer nextLayer = network.layers.get(i+1);
-            for(int j = 0; j < l.nodes.size(); ++j){
-                Node n = l.nodes.get(j);
-                for(int k = 0; k < nextLayer.nodes.size(); ++k){
+        for(int i = 0; i < network.getLayers().size()-1; ++i){
+            Layer l = network.getLayers().get(i);
+            Layer nextLayer = network.getLayers().get(i+1);
+            for(int j = 0; j < l.getNodes().size(); ++j){
+                Node n = l.getNodes().get(j);
+                for(int k = 0; k < nextLayer.getNodes().size(); ++k){
                     int rand = get.randomWithRange(0,5);
                     if(rand > alphaVal){
-                        Edge e = new Edge(n,nextLayer.nodes.get(k),get.randomWithRange(0,alphaVal));
+                        Edge e = new Edge(n, nextLayer.getNodes().get(k),get.randomWithRange(0,alphaVal));
                         n.appendEdge(e);
                     }
                 }

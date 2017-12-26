@@ -3,6 +3,7 @@ import java.util.Scanner;
 class Training {
     Network network = new Network();
     GetResources get = new GetResources();
+    int counter;
     void init() {
         network.loadNetwork();
         String[] words;
@@ -15,11 +16,42 @@ class Training {
         nonWords = nonWordFile.split("\n");
         float correctWords = doGuesses(words, 1);
         float correctNonWords = doGuesses(nonWords, 0);
-        System.out.println("Percent Correct Words: " + correctWords + "%\nPercent Correct Non-Words: " + correctNonWords + "%");
+       // System.out.println("Percent Correct Words: " + correctWords + "%\nPercent Correct Non-Words: " + correctNonWords + "%");
         float totalCorrect = (correctNonWords + correctWords) / 2;
-        System.out.println("Percent Correct: " + totalCorrect + "%");
+       // System.out.println("Percent Correct: " + totalCorrect + "%");
 
+        counter = 0;
         trainNetwork(totalCorrect,words,nonWords);
+        Scanner scan = new Scanner(System.in);
+        while(true) {
+            System.out.println("Enter word that you want to guess: ");
+            String word = scan.next();
+            word = word.replaceAll(" ", "");
+            if (word.length() > 45) {
+                word = word.substring(0, 45);
+            }
+            word = word.toLowerCase();
+            //System.out.println(string);
+            Layer l = new Layer();
+            for (int i = 0; i < word.length(); ++i) {
+                Node n = new Node(word.charAt(i));
+                l.appendNode(n);
+            }
+            network.newInputLayer(l);
+            network.proliferate();
+            int result = network.getResult();
+            if (result == 0) {
+                System.out.println("The neural network thinks that '" + word + "' is not a word");
+            } else {
+                System.out.println("The neural network thinks that '" + word + "' is a word");
+            }
+            System.out.println("Try another word? Y/N");
+            String res = scan.next().trim().toLowerCase();
+            if (res.contains("n")) {
+                break;
+            }
+        }
+
     }
 
     private void trainNetwork(float startingPercent, String[] words, String[] nonWords){
@@ -29,11 +61,17 @@ class Training {
         Network n1 = network;
         n1.randomChange();
         float correctPercentage = getCorrectPercentage(startingPercent,words,nonWords);
-        System.out.println(correctPercentage + "% Continue? Y/N");
-        Scanner scan = new Scanner(System.in);
-        String s = scan.next().trim().toLowerCase();
-        if(s.contains("n")){
-            return;
+        System.out.println("Iteration: "+counter+" Highest Percentage: " + startingPercent + "%");
+        counter++;
+        if(counter > 1000) {
+            System.out.println("Continue? Y/N");
+            Scanner scan = new Scanner(System.in);
+            String s = scan.next().trim().toLowerCase();
+            if (s.contains("n")) {
+                return;
+            }else{
+                counter = 0;
+            }
         }
 
         if(correctPercentage > startingPercent){
@@ -59,7 +97,7 @@ class Training {
                 string = string.substring(0,45);
             }
             string = string.toLowerCase();
-            System.out.println(string);
+            //System.out.println(string);
             Layer l = new Layer();
             for(int i = 0; i < string.length(); ++i){
                 Node n = new Node(string.charAt(i));
@@ -68,7 +106,7 @@ class Training {
             network.newInputLayer(l);
             network.proliferate();
             int result = network.getResult();
-            System.out.println(result);
+            //System.out.println(result);
             if(result == correctInteger){
                 correctGuesses++;
             }
