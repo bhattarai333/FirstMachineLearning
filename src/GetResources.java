@@ -240,25 +240,26 @@ class GetResources
     }
 
     String getTextFromFile(File f){
-        BufferedReader br = null;
-        String output = "";
+        //thanks to github user: https://stackoverflow.com/users/74694/neeme-praks
+       InputStream is = null;
+       try {
+           is = new FileInputStream(f);
+       }catch(Exception e){
+           e.printStackTrace();
+       }
+        StringBuilder sb = new StringBuilder(512);
         try {
-
-
-            br = new BufferedReader(new FileReader(f.toPath().toString()));
-
-            output = bufferedReaderToString(br);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (br != null)br.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            assert is != null;
+            Reader r = new InputStreamReader(is, "UTF-8");
+            int c = 0;
+            while ((c = r.read()) != -1) {
+                sb.append((char) c);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return output;
+        return sb.toString();
+
     }
 
     String bufferedReaderToString(BufferedReader br){

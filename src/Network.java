@@ -13,12 +13,22 @@ class Network {
 
         layers = new ArrayList<>();
     }
-
     void appendLayer(Layer l){
         layers.add(l);
         numberOfLayers++;
     }
 
+    void newInputLayer(Layer l){
+        Layer firstLayer = layers.get(0);
+        for(int i = 0; i < firstLayer.nodes.size(); ++i){
+            try {
+                firstLayer.nodes.get(i).setValue(l.nodes.get(i).getValue());
+            }catch (Exception e){
+                firstLayer.nodes.get(i).setValue(0);
+            }
+        }
+        layers.set(0,firstLayer);
+    }
     void proliferate(){
         for(int i = 0; i < layers.size() - 1; ++i){
             Layer l = layers.get(i);
@@ -31,6 +41,22 @@ class Network {
                 }
             }
         }
+    }
+    int getResult(){
+        Layer lastLayer = layers.get(layers.size()-1);
+        int indexOfHighestNode = 0;
+        int maxVal = Integer.MIN_VALUE;
+        for(Node n : lastLayer.nodes){
+            if(n.getValue() > maxVal){
+                maxVal = n.getValue();
+                indexOfHighestNode = lastLayer.nodes.indexOf(n);
+            }
+        }
+        return indexOfHighestNode;
+    }
+
+    void randomChange(){
+        int typeOfChange = get.randomWithRange(0,2);
     }
 
     @Override

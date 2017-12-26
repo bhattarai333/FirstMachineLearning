@@ -9,6 +9,11 @@ public class Node {
         edges = new ArrayList<>();
     }
 
+    Node(int value){
+        edges = new ArrayList<>();
+        this.value = value;
+    }
+
     int getValue() {
         return value;
     }
